@@ -1,0 +1,175 @@
+# The one way to open an issue here (config.yml turns blank issues off). Three answers become labels when the issue is
+# opened (.github/workflows/label-reports.yml): "Mod loader" -> "loader: <answer>", "Minecraft version" ->
+# "mc: <answer>", and "Kind of problem" -> "type: <the words before the colon, lower case>". Each needs its label to
+# exist: a new option here needs its label too (README.md, "Maintaining"). Severity is never asked: only the developer
+# sets it.
+name: Bug report
+description: Something in Fantasy Mounts is broken, crashes, or doesn't work as it should.
+labels: ["status: needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping make Fantasy Mounts better! A clear report with steps and a log gets fixed fastest.
+
+        > [!IMPORTANT]
+        > **This tracker is for bug reports only.** Suggestions, ideas and feature requests posted here are closed.
+        > Have an idea? Become a **Trailblazer** on [Patreon](https://patreon.com/fantasymounts) and share it with the developer in the Trailblazer channels on our [Discord](https://discord.gg/HkHPV6Z4zy). Trailblazers also play each month's new mounts before anyone else.
+
+        - **Need help installing or playing?** Ask in `#help` on our [Discord](https://discord.gg/HkHPV6Z4zy).
+        - **Found a bug in an early-access build?** Post it in `#beta-feedback` on Discord instead.
+        - **Found an exploit** (duplicating items, taking another player's mount, crashing a server on purpose)? Don't post it here where anyone can read it: [report it privately](https://github.com/BenDol/Fantasy-Mounts-Report/security/advisories/new).
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you report
+      options:
+        - label: This is a bug, not a suggestion or a feature request.
+          required: true
+        - label: I [searched the open and closed issues](https://github.com/BenDol/Fantasy-Mounts-Report/issues?q=is%3Aissue) and this hasn't been reported yet.
+          required: true
+        - label: It still happens on the newest Fantasy Mounts release for my Minecraft version.
+          required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Mod loader
+      description: Quilt players, pick Quilt (even though you use the Fabric file).
+      options:
+        - NeoForge
+        - Forge
+        - Fabric
+        - Quilt
+    validations:
+      required: true
+
+  - type: input
+    id: loader-version
+    attributes:
+      label: Mod loader version
+      description: Shown in your launcher's profile, or in the corner of the title screen.
+      placeholder: "For example: 21.1.77 (NeoForge), 47.4.0 (Forge), 0.16.14 (Fabric Loader)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: minecraft
+    attributes:
+      label: Minecraft version
+      description: Forge builds are for 1.20.1; NeoForge builds start at 1.21.1.
+      options:
+        - "26.3"
+        - "26.2"
+        - "26.1.2"
+        - "1.21.11"
+        - "1.21.10"
+        - "1.21.1"
+        - "1.20.1"
+    validations:
+      required: true
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Fantasy Mounts version
+      description: From the in-game mods list, or the file name (fantasy-**2.0.0**+1.21.1-neoforge.jar).
+      placeholder: "2.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      description: Pick the closest one.
+      options:
+        - "Crash: the game or the server closes, or won't start"
+        - "Gameplay: a mount, ability, skill, quest, item or spawn doesn't work as it should"
+        - "Visual: a model, animation, texture or effect looks wrong"
+        - "Interface: a menu, screen, the HUD or a piece of text is wrong"
+        - "Multiplayer: something only goes wrong on a server or with other players"
+        - "Performance: lag, stutter or low frame rate"
+        - "Compatibility: it only goes wrong with another mod installed"
+        - "Translation: wrong or missing text in a language other than English"
+        - "Accessibility: hard to see, hear or control for some players"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does it happen?
+      options:
+        - Single player
+        - "Multiplayer: a dedicated server"
+        - "Multiplayer: a world opened to LAN"
+        - Both single player and multiplayer
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Which mount, and what did you see? Include any error message on the screen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The exact steps that make it happen again, from loading the world.
+      placeholder: |
+        1. Tame a Unicorn
+        2. Ride it into water
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: false
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Log or crash report
+      description: |
+        Needed for every crash. Upload `logs/latest.log`, or the newest file in `crash-reports/`, to [mclo.gs](https://mclo.gs) and paste the link here. On a server, the server's log too.
+      placeholder: https://mclo.gs/...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: other-mods
+    attributes:
+      label: Other mods
+      description: The mods Fantasy Mounts needs on Fabric and Quilt (Fabric API or QFAPI, and Forge Config API Port) don't count.
+      options:
+        - Only Fantasy Mounts
+        - Fantasy Mounts and a few other mods
+        - A modpack
+    validations:
+      required: true
+
+  - type: textarea
+    id: mod-list
+    attributes:
+      label: Modpack or mod list
+      description: Name the modpack and its version, or list your other mods. Does it still happen with only Fantasy Mounts installed?
+    validations:
+      required: false
+
+  - type: textarea
+    id: media
+    attributes:
+      label: Screenshots or video
+      description: Drag images or a short clip in here, or paste a link.
+    validations:
+      required: false

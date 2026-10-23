@@ -1,0 +1,91 @@
+# Labels each bug report from its form (.github/ISSUE_TEMPLATE/bug_report.yml): the mod loader, the Minecraft version
+# and the kind of problem the reporter picked.
+#
+# Only those three prefixes are ever touched, and only with labels that already exist: the answers come from anyone
+# on the internet, so they pick from the repository's labels and never create one. Severity and status labels are
+# the developer's alone (README.md, "Labels").
+#
+# On an edit, only an answer that changed moves its label, so a label the developer corrected by hand stays put
+# unless the reporter changes that same answer.
+name: Label reports
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+concurrency:
+  group: label-reports-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event.action == 'opened' || github.event.changes.body != null
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            // A form question, and how its answer names a label. Questions are found by their label in the form.
+            const FIELDS = [
+              { question: 'Mod loader', label: (a) => `loader: ${a}` },
+              { question: 'Minecraft version', label: (a) => `mc: ${a}` },
+              // "Crash: the game or the server closes" -> "type: crash"
+              { question: 'Kind of problem', label: (a) => `type: ${a.split(':')[0].trim().toLowerCase()}` },
+            ];
+
+            // An issue form's body: "### <question>\n\n<answer>" per question, "_No response_" when left empty.
+            function answers(body) {
+              const found = {};
+              const parts = (body ?? '').replace(/\r\n/g, '\n').split(/^### /m).slice(1);
+              for (const part of parts) {
+                const newline = part.indexOf('\n');
+                if (newline < 0) continue;
+                const answer = part.slice(newline + 1).trim();
+                if (answer && answer !== '_No response_') found[part.slice(0, newline).trim()] = answer;
+              }
+              return found;
+            }
+
+            function wanted(body) {
+              const given = answers(body);
+              return FIELDS.map((f) => (given[f.question] ? f.label(given[f.question]) : null));
+            }
+
+            const issue = context.payload.issue;
+            const now = wanted(issue.body);
+            const before = context.payload.action === 'edited'
+              ? wanted(context.payload.changes.body.from)
+              : FIELDS.map(() => null);
+
+            const existing = new Set(
+              (await github.paginate(github.rest.issues.listLabelsForRepo, {
+                ...context.repo, per_page: 100,
+              })).map((l) => l.name),
+            );
+            const onIssue = new Set(issue.labels.map((l) => l.name));
+
+            const add = [];
+            const remove = [];
+            FIELDS.forEach((f, i) => {
+              if (now[i] === before[i]) return;
+              if (before[i] && onIssue.has(before[i])) remove.push(before[i]);
+              if (!now[i]) return;
+              if (existing.has(now[i])) add.push(now[i]);
+              else core.warning(`#${issue.number}: the "${f.question}" answer wants the label "${now[i]}", which doesn't exist; create it (README.md, "Maintaining")`);
+            });
+
+            for (const name of remove) {
+              try {
+                await github.rest.issues.removeLabel({ ...context.repo, issue_number: issue.number, name });
+              } catch (e) {
+                if (e.status !== 404) throw e; // already gone
+              }
+            }
+            if (add.length) {
+              await github.rest.issues.addLabels({ ...context.repo, issue_number: issue.number, labels: add });
+            }
+            core.info(`#${issue.number}: added [${add.join(', ')}], removed [${remove.join(', ')}]`);

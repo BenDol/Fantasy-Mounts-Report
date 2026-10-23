@@ -1,0 +1,12 @@
+# Every issue is a bug report (bug_report.yml); everything else is sent where it belongs.
+blank_issues_enabled: false
+contact_links:
+  - name: Have a suggestion or an idea?
+    url: https://patreon.com/fantasymounts
+    about: This tracker takes bug reports only. Become a Trailblazer on Patreon to share your ideas with the developer on our Discord, and play each month's new mounts first.
+  - name: Need help installing or playing?
+    url: https://discord.gg/HkHPV6Z4zy
+    about: Ask in #help on the Fantasy Mounts Discord.
+  - name: Riders Encyclopedia
+    url: https://fantasymounts.com/encyclopedia/
+    about: Where each mount lives, how to tame it, and what it can do.

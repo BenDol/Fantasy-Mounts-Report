@@ -1,0 +1,36 @@
+# When the developer labels an issue "resolution: suggestion", this tells the reporter where ideas go and closes it as
+# not planned. Only people who can triage here can add a label, so only the developer can set this off.
+name: Redirect suggestions
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  redirect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: "github.event.label.name == 'resolution: suggestion' && github.event.issue.state == 'open'"
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const issue = context.payload.issue;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: issue.number,
+              body: [
+                'Thanks for the idea! This tracker takes bug reports only, so we close suggestions and feature requests here.',
+                '',
+                'If you would like to help shape Fantasy Mounts, become a **Trailblazer** on [Patreon](https://patreon.com/fantasymounts) and share your ideas with the developer in the Trailblazer channels on our [Discord](https://discord.gg/HkHPV6Z4zy). Trailblazers also play each month\'s new mounts before anyone else.',
+              ].join('\n'),
+            });
+            await github.rest.issues.update({
+              ...context.repo,
+              issue_number: issue.number,
+              state: 'closed',
+              state_reason: 'not_planned',
+            });
