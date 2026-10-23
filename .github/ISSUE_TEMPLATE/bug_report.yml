@@ -2,7 +2,8 @@
 # opened (.github/workflows/label-reports.yml): "Mod loader" -> "loader: <answer>", "Minecraft version" ->
 # "mc: <answer>", and "Kind of problem" -> "type: <the words before the colon, lower case>". Each needs its label to
 # exist: a new option here needs its label too (README.md, "Maintaining"). Severity is never asked: only the developer
-# sets it.
+# sets it. The website's report dialog (fantasymounts.com, web/src/lib/report.ts in the mod's repository) sends the
+# same headings and option text, so the labeller reads its reports the same way.
 name: Bug report
 description: Something in Fantasy Mounts is broken, crashes, or doesn't work as it should.
 labels: ["status: needs triage"]
@@ -58,7 +59,7 @@ body:
     id: minecraft
     attributes:
       label: Minecraft version
-      description: Forge builds are for 1.20.1; NeoForge builds start at 1.21.1.
+      description: Forge builds are for 1.20.1 (and 1.16.5, for Fantasy Mounts 1.1.1); NeoForge builds start at 1.21.1.
       options:
         - "26.3"
         - "26.2"
@@ -67,6 +68,7 @@ body:
         - "1.21.10"
         - "1.21.1"
         - "1.20.1"
+        - "1.16.5"
     validations:
       required: true
 

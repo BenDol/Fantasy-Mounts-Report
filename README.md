@@ -6,6 +6,9 @@ find, tame, breed and ride, on Forge, NeoForge, Fabric and Quilt.
 **[Report a bug](https://github.com/BenDol/Fantasy-Mounts-Report/issues/new/choose)** ·
 [Search existing reports](https://github.com/BenDol/Fantasy-Mounts-Report/issues?q=is%3Aissue)
 
+No GitHub account? Use **Report a bug** on [fantasymounts.com](https://fantasymounts.com): the site posts your report
+here for you, labelled `via: website`.
+
 ## Bugs only
 
 This tracker takes **bug reports only**. Suggestions, ideas and feature requests opened here are closed.
@@ -54,11 +57,14 @@ Your answers in the form label the report for you: the **mod loader** (`loader: 
 | `resolution: suggestion` | An idea, not a bug: closed with a pointer to Patreon and Discord |
 | `resolution: invalid` | Not about Fantasy Mounts, or not enough to act on |
 | `resolution: won't fix` | Won't be changed |
+| `via: website` | Sent from fantasymounts.com by a player without a GitHub account; they can't reply here, but may leave a Discord name |
 
 ## Maintaining
 
 - **A new Minecraft version or loader:** add it to the form (`.github/ISSUE_TEMPLATE/bug_report.yml`) and create its
   label with the same name, for example `gh label create "mc: 26.4" --color 5c8a3a -R BenDol/Fantasy-Mounts-Report`.
+  The website's dialog offers the versions of every published release by itself, so only the label and this form
+  need adding.
   The labeller only applies labels that exist, and warns in the Actions log when an answer has none.
 - **A new kind of problem:** the label is `type: ` plus the option's words before its colon, in lower case.
 - **Severity** is never in the form, and reporters can't add labels themselves, so severity and status are the
